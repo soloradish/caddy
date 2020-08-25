@@ -1,0 +1,3 @@
+xcaddy=v0.1.5
+caddy_core=v2.1.1
+plugin_route53=v1.0.2

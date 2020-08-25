@@ -1,0 +1,29 @@
+name: Build Caddy with xcaddy
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Caddy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Read versions from file `VERSIONS`
+      - name: Set xcaddy version
+        run: echo "::set-env name=XCADDY_VERSION::$(grep xcaddy VERSIONS | sed -E 's/(.+)=(.*)/\2/')"
+      - name: Set caddy_core version
+        run: echo "::set-env name=CADDY_CORE_VERSION::$(grep caddy_core VERSIONS | sed -E 's/(.+)=(.*)/\2/')"
+      - name: Set route53 plugin version
+        run: echo "::set-env name=PLUGIN_ROUTE53_VERSION::$(grep plugin_route53 VERSIONS | sed -E 's/(.+)=(.*)/\2/')"
+
+      - name: Download and unzip xcaddy binary
+        run: |
+          wget "https://github.com/caddyserver/xcaddy/releases/download/${XCADDY_VERSION}/xcaddy_$(echo ${XCADDY_VERSION} | sed 's/v//')_linux_amd64.tar.gz" -O xcaddy.tar.gz
+          tar --extract --file=xcaddy.tar.gz xcaddy
+          chmod +x xcaddy
+
+      - name: build caddy
+        run: xcaddy build "${CADDY_CORE_VERSION}" --with "github.com/caddy-dns/route53@${PLUGIN_ROUTE53_VERSION}" --output ./caddy
