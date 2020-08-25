@@ -36,11 +36,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ env.CADDY_CORE_VERSION }}@{{ env.PLUGIN_ROUTE53_VERSION }}
+          tag_name: ${{ env.CADDY_CORE_VERSION }}@${{ env.PLUGIN_ROUTE53_VERSION }}
           release_name: Release ${{ env.CADDY_CORE_VERSION }}@{{ env.PLUGIN_ROUTE53_VERSION }}
           body: |
             caddy version: ${{ env.CADDY_CORE_VERSION }}
-            route53 plugin version: {{ env.PLUGIN_ROUTE53_VERSION }}
+            route53 plugin version: ${{ env.PLUGIN_ROUTE53_VERSION }}
           draft: false
           prerelease: false
       - name: Upload Release Asset
