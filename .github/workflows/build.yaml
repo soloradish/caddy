@@ -21,7 +21,9 @@ jobs:
 
       - name: Download and unzip xcaddy binary
         run: |
+          echo "download xcaddy"
           wget "https://github.com/caddyserver/xcaddy/releases/download/${XCADDY_VERSION}/xcaddy_$(echo ${XCADDY_VERSION} | sed 's/v//')_linux_amd64.tar.gz" -O xcaddy.tar.gz
+          echo "unzip xcaddy"
           tar --extract --file=xcaddy.tar.gz xcaddy
           chmod +x xcaddy
 
