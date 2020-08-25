@@ -26,4 +26,32 @@ jobs:
           chmod +x xcaddy
 
       - name: build caddy
-        run: ./xcaddy build "${CADDY_CORE_VERSION}" --with "github.com/caddy-dns/route53@${PLUGIN_ROUTE53_VERSION}" --output ./caddy
+        run: |
+          ./xcaddy build "${CADDY_CORE_VERSION}" --with "github.com/caddy-dns/route53@${PLUGIN_ROUTE53_VERSION}" --output ./caddy
+          tar -zcvf caddy-route53-amd64.tar.gz ./caddy
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.CADDY_CORE_VERSION }}@{{ env.PLUGIN_ROUTE53_VERSION }}
+          release_name: Release ${{ env.CADDY_CORE_VERSION }}@{{ env.PLUGIN_ROUTE53_VERSION }}
+          body: |
+            caddy version: ${{ env.CADDY_CORE_VERSION }}
+            route53 plugin version: {{ env.PLUGIN_ROUTE53_VERSION }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./caddy-route53-amd64.tar.gz
+          asset_name: caddy-route53-amd64.tar.gz
+          asset_content_type: application/gzip
+
+      
