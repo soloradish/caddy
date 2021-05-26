@@ -13,11 +13,11 @@ jobs:
 
       # Read versions from file `VERSIONS`
       - name: Set xcaddy version
-        run: echo "::set-env name=XCADDY_VERSION::$(grep xcaddy VERSIONS | sed -E 's/(.+)=(.*)/\2/')"
+        run: echo "XCADDY_VERSION=$(grep xcaddy VERSIONS | sed -E 's/(.+)=(.*)/\2/')" >> $GITHUB_ENV
       - name: Set caddy_core version
-        run: echo "::set-env name=CADDY_CORE_VERSION::$(grep caddy_core VERSIONS | sed -E 's/(.+)=(.*)/\2/')"
+        run: echo "CADDY_CORE_VERSION=$(grep caddy_core VERSIONS | sed -E 's/(.+)=(.*)/\2/')" >> $GITHUB_ENV
       - name: Set route53 plugin version
-        run: echo "::set-env name=PLUGIN_ROUTE53_VERSION::$(grep plugin_route53 VERSIONS | sed -E 's/(.+)=(.*)/\2/')"
+        run: echo "PLUGIN_ROUTE53_VERSION=$(grep plugin_route53 VERSIONS | sed -E 's/(.+)=(.*)/\2/')" >> $GITHUB_ENV
 
       - name: Download and unzip xcaddy binary
         run: |
